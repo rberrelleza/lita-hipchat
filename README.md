@@ -30,6 +30,7 @@ Values for all of the following attributes can be found on the "XMPP/Jabber info
 * **DEPRECATED** - `rooms` (Symbol, Array<String>) - An array of room JIDs that Lita should join upon connection. Can also be the symbol `:all`, which will cause Lita to discover and join all rooms. Default: `nil` (no rooms).
 * `muc_domain` (String) - The XMPP Multi-User Chat domain to use. Default: `"conf.hipchat.com"`.
 * `ignore_unknown_users` (Boolean) - Messages generated through HipChat's API which don't come from a real user account will be ignored by the robot. With the default setting of false, Lita will emit a warning but the message will be dispatched to any registered handlers as usual. Default: `false`.
+* `use_http_binding` (Boolean) - Use `xmpp-bosh` (aka HTTP Binding) when connecting to Hipchat. This means you'll have to give `server` an `http[s]://...` uri. Per HipChat's documentation, the default url for an on-premises deployment ("HipChat Server" or "HipChat Data Center") is `http[s]://your-hipchat-hostname.com/http-bind`. ([See the release notes](https://confluence.atlassian.com/hipchatkb/external-xmpp-ports-5222-5223-disabled-by-default-in-hipchat-server-2-0-7-859442760.html)) Default: `false`.
 
 **Note: You must set the robot's name to the value shown as "Room nickname" on the XMPP settings page.**
 

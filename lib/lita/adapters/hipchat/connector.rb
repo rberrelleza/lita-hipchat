@@ -4,6 +4,7 @@ require "xmpp4r"
 require "xmpp4r/roster/helper/roster"
 require "xmpp4r/muc/helper/simplemucclient"
 require "xmpp4r/muc/helper/mucbrowser"
+require "xmpp4r/httpbinding/client"
 
 module Lita
   module Adapters
@@ -11,12 +12,16 @@ module Lita
       class Connector
         attr_reader :robot, :client, :roster
 
-        def initialize(robot, jid, password, server, debug: false)
+        def initialize(robot, jid, password, server, use_http_binding: false, debug: false)
           @robot = robot
           @jid = normalized_jid(jid, "chat.hipchat.com", "bot")
           @password = password
           @server = server
-          @client = Jabber::Client.new(@jid)
+          if use_http_binding
+            @client = Jabber::HTTPBinding::Client.new(@jid)
+          else
+            @client = Jabber::Client.new(@jid)
+          end
           if debug
             Lita.logger.info("Enabling Jabber log.")
             Jabber.debug = true
@@ -97,8 +102,9 @@ module Lita
         end
 
         def shut_down
-          Lita.logger.info("Disconnecting from HipChat.")
+          Lita.logger.info("Disconnecting from HipChat...")
           client.close
+          Lita.logger.info("Disconnected from HipChat.")
         rescue IOError, SystemCallError => e
           Lita.logger.warn("Encountered error during disconnect: #{e}")
         end
@@ -120,7 +126,8 @@ module Lita
 
         def register_exception_handler
           client.on_exception do |error, connection, error_source|
-            robot.shut_down
+            Lita.logger.warn("HipChat adapter exception: Error: #{error}, Error Source: #{error_source}")
+            raise Interrupt
           end
         end
 

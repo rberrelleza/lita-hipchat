@@ -16,12 +16,13 @@ module Lita
       config :rooms, type: [Symbol, Array]
       config :muc_domain, type: String, default: "conf.hipchat.com"
       config :ignore_unknown_users, type: [TrueClass, FalseClass], default: false
+      config :use_http_binding, type: [TrueClass, FalseClass], default: false
 
       attr_reader :connector
 
       def initialize(robot)
         super
-        @connector = Connector.new(robot, config.jid, config.password, config.server, debug: config.debug)
+        @connector = Connector.new(robot, config.jid, config.password, config.server, use_http_binding: config.use_http_binding, debug: config.debug)
       end
 
       def join(room_id)

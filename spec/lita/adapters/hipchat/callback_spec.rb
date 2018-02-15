@@ -19,7 +19,8 @@ describe Lita::Adapters::HipChat::Callback, lita: true do
     instance_double("Jabber::Roster::RosterItem", attributes: {
       "jid" => "user_id",
       "name" => "Carl",
-      "mention_name" => "@Carl"
+      "mention_name" => "@Carl",
+      "email" => "carl@carl.com"
     }, iname: "Carl")
   end
 
@@ -28,7 +29,8 @@ describe Lita::Adapters::HipChat::Callback, lita: true do
     allow(Lita::User).to receive(:create).with(
       "user_id",
       name: "Carl",
-      mention_name: "@Carl"
+      mention_name: "@Carl",
+      email: "carl@carl.com"
     ).and_return(user)
   end
 
@@ -109,7 +111,7 @@ describe Lita::Adapters::HipChat::Callback, lita: true do
   describe "#roster_update" do
     it "finds/creates a user object for the roster item" do
       allow(roster).to receive(:add_update_callback).and_yield(nil, roster_item)
-      expect(Lita::User).to receive(:create).with("user_id", name: "Carl", mention_name: "@Carl")
+      expect(Lita::User).to receive(:create).with("user_id", name: "Carl", mention_name: "@Carl", email: "carl@carl.com")
       subject.roster_update
     end
 
